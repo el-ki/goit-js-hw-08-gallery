@@ -35,15 +35,21 @@
 // Закрытие модального окна по нажатию клавиши ESC.
 // Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
 
+// Создание и рендер разметки по массиву данных и предоставленному шаблону.
 import galleryItems from './gallery-items.js';
 console.log(galleryItems);
 
 const refs = {
     ulGallery: document.querySelector('.js-gallery'),
+    largeImg: document.querySelector('.lightbox__image'),
+    openModal: document.querySelector('.js-lightbox'),
+    closeModal: document.querySelector('button[data-action="close-lightbox"]')
+    
 }
+console.log(refs.largeImg.src);
+console.log(refs.closeModal);
 
 const createsItemMarkup = item => {
-
     const liRef = document.createElement('li');
     liRef.classList.add('gallery__item');
     const aRef = document.createElement('a');
@@ -57,7 +63,6 @@ const createsItemMarkup = item => {
     aRef.appendChild(imgRef);
     liRef.appendChild(aRef);
     return liRef;
-
 };
 
 const galleryItemMarkup = galleryItems.map(item => createsItemMarkup(item));
@@ -65,15 +70,36 @@ refs.ulGallery.append(...galleryItemMarkup)
 
 console.log(refs.ulGallery);
 
+//Реализация делегирования на галерее ul.js-gallery и получение url большого изображения.
+// Открытие модального окна по клику на элементе галереи.
+// Подмена значения атрибута src элемента img.lightbox__image.
+
+refs.ulGallery.addEventListener('click', onImgClick);
+
+function onImgClick(event) {
+    event.preventDefault();
+    if (event.target.nodeName !== 'IMG') return;
+    const imgRef = event.target;
+    const largeImgURL = imgRef.dataset.source;
+    refs.largeImg.alt = imgRef.alt;
+    refs.openModal.classList.add('is-open');
+
+    setLargeImgSrc(largeImgURL)
+}
+
+function setLargeImgSrc(url) { 
+    refs.largeImg.src = url;
+}
+
+// Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
+// Очистка значения атрибута src элемента img.lightbox__image.
+
+refs.closeModal.addEventListener('click', () => { 
+    refs.openModal.classList.remove('is-open');
+    refs.largeImg.src = '';
+    refs.largeImg.alt = '';
+
+})
 
 
 
-
-// const item = {
-//     preview:
-//       'https://cdn.pixabay.com/photo/2019/05/16/21/10/landscape-4208255__340.jpg',
-//     original:
-//       'https://cdn.pixabay.com/photo/2019/05/16/21/10/landscape-4208255_1280.jpg',
-//     description: 'Nature Landscape',
-// }
-//     console.log(createsItemMarkup(item));
