@@ -42,7 +42,6 @@ const refs = {
     ulGallery: document.querySelector('.js-gallery'),
     largeImg: document.querySelector('.lightbox__image'),
     toggleModal: document.querySelector('.js-lightbox'),
-    // closeModal: document.querySelector('button[data-action="close-lightbox"]'),
 }
 
 let initialIndex = -1;
@@ -93,14 +92,6 @@ function setLargeImgSrc(url) {
 
 // Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
 // Очистка значения атрибута src элемента img.lightbox__image.
-
-// refs.closeModal.addEventListener('click', () => { 
-//     refs.toggleModal.classList.remove('is-open');
-//     refs.largeImg.src = '';
-//     refs.largeImg.alt = '';
-
-// })
-
 // Закрытие модального окна по клику на div.lightbox__overlay.
 const onCloseModal = () => { 
     window.removeEventListener('keydown', onPressEsc);
@@ -142,23 +133,4 @@ const onMoveRight = () => {
     setLargeImgSrc(nextImg);
 };
 
-
-// window.addEventListener('keydown', (event) => { 
-//     if (event.code === 'ArrowLeft'){
-//         const previousIndex = refs.largeImg.dataset.index - 1;
-//         if (previousIndex < 0) return;
-//         refs.largeImg.dataset.index = previousIndex;
-//         const previousImg = galleryItems[previousIndex].original;
-//         setLargeImgSrc(previousImg);
-
-//     }
-//     if (event.code === 'ArrowRight') { 
-//         const nextIndex = Number(refs.largeImg.dataset.index) + 1;
-//         if (nextIndex > galleryItems.length - 1) return;
-//         refs.largeImg.dataset.index = nextIndex;
-//         const nextImg = galleryItems[nextIndex].original;
-//         setLargeImgSrc(nextImg);
-
-//     }
-// });
         
