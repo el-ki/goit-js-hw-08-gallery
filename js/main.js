@@ -41,7 +41,9 @@ import galleryItems from './gallery-items.js';
 const refs = {
     ulGallery: document.querySelector('.js-gallery'),
     largeImg: document.querySelector('.lightbox__image'),
-    toggleModal: document.querySelector('.js-lightbox'),
+    openModal: document.querySelector('.js-lightbox'),
+    closeModalBtn: document.querySelector('button[data-action="close-lightbox"]'),
+    closeModalOverlay: document.querySelector('.lightbox__overlay'),
 }
 
 let initialIndex = -1;
@@ -79,10 +81,10 @@ function onOpenModal(event) {
     window.addEventListener('keydown', onPressKey);
     if (event.target.nodeName !== 'IMG') return;
     const imgRef = event.target;
-    let largeImgURL = imgRef.dataset.source;
+    const largeImgURL = imgRef.dataset.source;
     refs.largeImg.alt = imgRef.alt;
     refs.largeImg.setAttribute('data-index', `${imgRef.dataset.index}`)
-    refs.toggleModal.classList.add('is-open');
+    refs.openModal.classList.add('is-open');
     setLargeImgSrc(largeImgURL);
 }
 
@@ -93,17 +95,18 @@ function setLargeImgSrc(url) {
 // Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
 // Очистка значения атрибута src элемента img.lightbox__image.
 // Закрытие модального окна по клику на div.lightbox__overlay.
+
 const onCloseModal = () => { 
     window.removeEventListener('keydown', onPressKey);
-    refs.toggleModal.classList.remove('is-open');
+    refs.openModal.classList.remove('is-open');
     refs.largeImg.src = '';
     refs.largeImg.alt = '';
 }
 
-refs.toggleModal.addEventListener('click', (event) => { 
-    if (event.target.nodeName === 'IMG') return;
-    onCloseModal();
-})
+refs.closeModalBtn.addEventListener('click', onCloseModal);
+refs.closeModalOverlay.addEventListener('click', onCloseModal);
+
+
 // Закрытие модального окна по нажатию клавиши ESC.
 const onPressKey = (event) => {
     if (event.code === 'Escape') {
