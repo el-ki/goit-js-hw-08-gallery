@@ -79,6 +79,8 @@ refs.ulGallery.addEventListener('click', onOpenModal);
 function onOpenModal(event) {
     event.preventDefault();
     window.addEventListener('keydown', onPressKey);
+    refs.closeModalBtn.addEventListener('click', onCloseModal);
+    refs.closeModalOverlay.addEventListener('click', onCloseModal);
     if (event.target.nodeName !== 'IMG') return;
     const imgRef = event.target;
     const largeImgURL = imgRef.dataset.source;
@@ -93,19 +95,17 @@ function setLargeImgSrc(url) {
 }
 
 // Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
-// Очистка значения атрибута src элемента img.lightbox__image.
-// Закрытие модального окна по клику на div.lightbox__overlay.
+// Закрытие модального окна по клику на div.lightbox__overlay - *реализовано в onOpenModal, снято в onCloseModal*
+// Очистка значения атрибута src элемента img.lightbox__image - *реализовано в onOpenModal, снято в onCloseModal*
 
 const onCloseModal = () => { 
     window.removeEventListener('keydown', onPressKey);
+    refs.closeModalBtn.removeEventListener('click', onCloseModal);
+    refs.closeModalOverlay.removeEventListener('click', onCloseModal);
     refs.openModal.classList.remove('is-open');
     refs.largeImg.src = '';
     refs.largeImg.alt = '';
 }
-
-refs.closeModalBtn.addEventListener('click', onCloseModal);
-refs.closeModalOverlay.addEventListener('click', onCloseModal);
-
 
 // Закрытие модального окна по нажатию клавиши ESC.
 const onPressKey = (event) => {
