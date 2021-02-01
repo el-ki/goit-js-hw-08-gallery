@@ -68,8 +68,6 @@ const createsItemMarkup = item => {
 const galleryItemMarkup = galleryItems.map(item => createsItemMarkup(item));
 refs.ulGallery.append(...galleryItemMarkup)
 
-console.log(refs.ulGallery);
-
 //Реализация делегирования на галерее ul.js-gallery и получение url большого изображения.
 // Открытие модального окна по клику на элементе галереи.
 // Подмена значения атрибута src элемента img.lightbox__image.
@@ -94,9 +92,9 @@ function setLargeImgSrc(url) {
     refs.largeImg.src = url;
 }
 
-// Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
+// Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"] - *реализовано в onOpenModal, снято в onCloseModal*
 // Закрытие модального окна по клику на div.lightbox__overlay - *реализовано в onOpenModal, снято в onCloseModal*
-// Очистка значения атрибута src элемента img.lightbox__image - *реализовано в onOpenModal, снято в onCloseModal*
+// Очистка значения атрибута src элемента img.lightbox__image 
 
 const onCloseModal = () => { 
     window.removeEventListener('keydown', onPressKey);
@@ -108,6 +106,7 @@ const onCloseModal = () => {
 }
 
 // Закрытие модального окна по нажатию клавиши ESC.
+
 const onPressKey = (event) => {
     if (event.code === 'Escape') {
         onCloseModal();
@@ -117,6 +116,7 @@ const onPressKey = (event) => {
         onMoveRight()
     }
 }
+
 // Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
 
 const onMoveLeft = () => {
@@ -125,7 +125,6 @@ const onMoveLeft = () => {
     refs.largeImg.dataset.index = previousIndex;
     const previousImg = galleryItems[previousIndex].original;
     setLargeImgSrc(previousImg);
-
 };
 
 const onMoveRight = () => {
