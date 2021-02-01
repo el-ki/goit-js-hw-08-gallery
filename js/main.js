@@ -94,7 +94,7 @@ function setLargeImgSrc(url) {
 // Очистка значения атрибута src элемента img.lightbox__image.
 // Закрытие модального окна по клику на div.lightbox__overlay.
 const onCloseModal = () => { 
-    window.removeEventListener('keydown', onPressEsc);
+    window.removeEventListener('keydown', onPressKey);
     refs.toggleModal.classList.remove('is-open');
     refs.largeImg.src = '';
     refs.largeImg.alt = '';
