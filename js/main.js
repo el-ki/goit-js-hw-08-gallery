@@ -37,17 +37,15 @@
 
 // Создание и рендер разметки по массиву данных и предоставленному шаблону.
 import galleryItems from './gallery-items.js';
-console.log(galleryItems);
 
 const refs = {
     ulGallery: document.querySelector('.js-gallery'),
     largeImg: document.querySelector('.lightbox__image'),
-    openModal: document.querySelector('.js-lightbox'),
-    closeModal: document.querySelector('button[data-action="close-lightbox"]')
-    
+    toggleModal: document.querySelector('.js-lightbox'),
+    // closeModal: document.querySelector('button[data-action="close-lightbox"]'),
 }
-console.log(refs.largeImg.src);
-console.log(refs.closeModal);
+
+let initialIndex = -1;
 
 const createsItemMarkup = item => {
     const liRef = document.createElement('li');
@@ -60,6 +58,7 @@ const createsItemMarkup = item => {
     imgRef.src = `${item.preview}`;
     imgRef.setAttribute('data-source', `${item.original}`);
     imgRef.alt = `${item.description}`;
+    imgRef.setAttribute('data-index', `${initialIndex += 1}`);
     aRef.appendChild(imgRef);
     liRef.appendChild(aRef);
     return liRef;
@@ -74,17 +73,18 @@ console.log(refs.ulGallery);
 // Открытие модального окна по клику на элементе галереи.
 // Подмена значения атрибута src элемента img.lightbox__image.
 
-refs.ulGallery.addEventListener('click', onImgClick);
+refs.ulGallery.addEventListener('click', onOpenModal);
 
-function onImgClick(event) {
+function onOpenModal(event) {
     event.preventDefault();
+    window.addEventListener('keydown', onPressKey);
     if (event.target.nodeName !== 'IMG') return;
     const imgRef = event.target;
-    const largeImgURL = imgRef.dataset.source;
+    let largeImgURL = imgRef.dataset.source;
     refs.largeImg.alt = imgRef.alt;
-    refs.openModal.classList.add('is-open');
-
-    setLargeImgSrc(largeImgURL)
+    refs.largeImg.setAttribute('data-index', `${imgRef.dataset.index}`)
+    refs.toggleModal.classList.add('is-open');
+    setLargeImgSrc(largeImgURL);
 }
 
 function setLargeImgSrc(url) { 
@@ -94,12 +94,71 @@ function setLargeImgSrc(url) {
 // Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
 // Очистка значения атрибута src элемента img.lightbox__image.
 
-refs.closeModal.addEventListener('click', () => { 
-    refs.openModal.classList.remove('is-open');
+// refs.closeModal.addEventListener('click', () => { 
+//     refs.toggleModal.classList.remove('is-open');
+//     refs.largeImg.src = '';
+//     refs.largeImg.alt = '';
+
+// })
+
+// Закрытие модального окна по клику на div.lightbox__overlay.
+const onCloseModal = () => { 
+    window.removeEventListener('keydown', onPressEsc);
+    refs.toggleModal.classList.remove('is-open');
     refs.largeImg.src = '';
     refs.largeImg.alt = '';
+}
 
+refs.toggleModal.addEventListener('click', (event) => { 
+    if (event.target.nodeName === 'IMG') return;
+    onCloseModal();
 })
+// Закрытие модального окна по нажатию клавиши ESC.
+const onPressKey = (event) => {
+    if (event.code === 'Escape') {
+        onCloseModal();
+    } if (event.code === 'ArrowLeft') { 
+        onMoveLeft()
+    } if (event.code === 'ArrowRight') { 
+        onMoveRight()
+    }
+}
+// Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
+
+const onMoveLeft = () => {
+    const previousIndex = refs.largeImg.dataset.index - 1;
+    if (previousIndex < 0) return;
+    refs.largeImg.dataset.index = previousIndex;
+    const previousImg = galleryItems[previousIndex].original;
+    setLargeImgSrc(previousImg);
+
+};
+
+const onMoveRight = () => {
+    const nextIndex = Number(refs.largeImg.dataset.index) + 1;
+    if (nextIndex > galleryItems.length - 1) return;
+    refs.largeImg.dataset.index = nextIndex;
+    const nextImg = galleryItems[nextIndex].original;
+    setLargeImgSrc(nextImg);
+};
 
 
+// window.addEventListener('keydown', (event) => { 
+//     if (event.code === 'ArrowLeft'){
+//         const previousIndex = refs.largeImg.dataset.index - 1;
+//         if (previousIndex < 0) return;
+//         refs.largeImg.dataset.index = previousIndex;
+//         const previousImg = galleryItems[previousIndex].original;
+//         setLargeImgSrc(previousImg);
 
+//     }
+//     if (event.code === 'ArrowRight') { 
+//         const nextIndex = Number(refs.largeImg.dataset.index) + 1;
+//         if (nextIndex > galleryItems.length - 1) return;
+//         refs.largeImg.dataset.index = nextIndex;
+//         const nextImg = galleryItems[nextIndex].original;
+//         setLargeImgSrc(nextImg);
+
+//     }
+// });
+        
